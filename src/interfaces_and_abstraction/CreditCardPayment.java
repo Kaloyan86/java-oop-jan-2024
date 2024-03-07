@@ -14,6 +14,11 @@ public class CreditCardPayment extends Payment implements Payable {
         System.out.println("Sum " + amount + " is payed by Credit Card!");
     }
 
+    @Override
+    public void addMoneyToAccount(int money) {
+        System.out.printf("Sum %d has been added to CreditCard!\n", money);
+    }
+
     public double getLimit() {
         return limit;
     }
