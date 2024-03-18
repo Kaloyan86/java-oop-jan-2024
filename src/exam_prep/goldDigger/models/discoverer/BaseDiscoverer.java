@@ -14,6 +14,7 @@ public abstract class BaseDiscoverer implements Discoverer {
     public BaseDiscoverer(String name, double energy) {
         this.setName(name);
         this.setEnergy(energy);
+      //  this.museum = new BaseMuseum();
     }
 
     @Override
