@@ -1,9 +1,9 @@
 package reflection_and_annotation.barracksWars.core.commands;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import reflection_and_annotation.barracksWars.core.Inject;
 import reflection_and_annotation.barracksWars.interfaces.CommandInterpreter;
@@ -33,13 +33,35 @@ public class CommandInterpreterImpl implements CommandInterpreter {
 
         Class<Command> commandClazz = (Class<Command>) Class.forName(className);
 
-        //TODO use Inject annotation in order to inject annotated fields
+        Constructor<Command> con = commandClazz.getDeclaredConstructor(String[].class);
+
+        Command command = con.newInstance((Object) data);
 
         Field[] declaredFields = commandClazz.getDeclaredFields();
 
-        Constructor<Command> con = commandClazz.getDeclaredConstructor
-                                               (String[].class, Repository.class, UnitFactory.class);
+        Arrays.stream(declaredFields)
+              .filter(field -> field.isAnnotationPresent(Inject.class))
+              .forEach(field -> {
+                  try {
+                      injectField(field, this.getClass().getDeclaredFields(), command);
+                  } catch (IllegalAccessException e) {
+                      e.printStackTrace();
+                  }
+              });
 
-        return con.newInstance(data, repository, unitFactory);
+        return command;
+    }
+
+    private void injectField(Field field, Field[] fieldsToInject, Command command) throws IllegalAccessException {
+
+        Field fieldToInject = Arrays.stream(fieldsToInject)
+                                    .filter(f -> f.getType().equals(field.getType()))
+                                    .findFirst()
+                                    .orElse(null);
+
+        if (null != fieldToInject) {
+            field.setAccessible(true);
+            field.set(command, fieldToInject.get(this));
+        }
     }
 }
