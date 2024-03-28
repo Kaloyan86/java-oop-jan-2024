@@ -8,6 +8,10 @@ public abstract class Payment {
         this.user = user;
     }
 
+    public void setUser(String user) {
+        this.user = user;
+    }
+
     public abstract void report();
 
 }

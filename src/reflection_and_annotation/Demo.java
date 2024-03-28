@@ -53,12 +53,14 @@ public class Demo {
 
        // method.setAccessible(true); // access private method
 
-        method.invoke(kaloyan, "Svetlin"); // invoke setName(String name);
+      //  method.invoke(kaloyan, "Svetlin"); // invoke setName(String name);
 
         System.out.println(kaloyan.getName());
 
         Field field = allFields[0];
         field.setAccessible(true);
+        String k = "KKKKKKKKKK";
+        field.set(kaloyan, k);
 
         System.out.println(field.get(kaloyan));
 
